@@ -1,0 +1,437 @@
+
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="jP_y4G3tOPhxAEUqNFK0eZ1yBx8hg5Rm-Xxq-DWtBFE" />
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg,#071428 0%, #0f1724 100%);
+    padding: 30px;
+    
+  }
+  
+  h1 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .quiz-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    padding: 20px;
+    margin-bottom: 30px;
+    transition: transform 0.2s, box-shadow 0.3s, background-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quiz-card.correct {
+    background: #00cc66;
+    box-shadow: 0 0 25px #00ff7f;
+    animation: zoomIn 0.4s;
+  }
+
+  .quiz-card.wrong {
+    background: #ff4d4d;
+    box-shadow: 0 0 25px #ff0000;
+    animation: shake 0.4s;
+  }
+
+  .quiz-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+
+  .quiz-card p {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #222;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .option:hover {
+    background-color: #d6d6d6;
+  }
+
+  .option input {
+    margin-right: 10px;
+  }
+
+  .icon {
+    font-size: 22px;
+    margin-left: auto;
+  }
+
+  .confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: red;
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    border-radius: 50%;
+    animation: explode 1s forwards;
+  }
+
+  @keyframes explode {
+    0% {transform: translate(0,0) scale(1); opacity: 1;}
+    100% {transform: translate(var(--x), var(--y)) scale(0.5); opacity: 0;}
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-7px); }
+    50% { transform: translateX(7px); }
+    75% { transform: translateX(-7px); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes zoomIn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+    100% { transform: scale(1); }
+  }
+
+  /* Drag & Drop pjesa */
+  .zone-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+    gap: 60px;
+  }
+  .dropzone {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding-top: 20px;
+  }
+  .answers {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .answer {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: grab;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: background-color 0.3s, transform 0.3s;
+    margin: 5px;
+  }
+  .answer.correct {
+    background-color: #c8f7c5;
+    transform: scale(1.05);
+  }
+  .answer.wrong {
+    background-color: #f8c7c7;
+    animation: shake 0.3s;
+  }
+  .icon {
+    margin-left: 5px;
+  }
+  .confetti2 {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: confettiFall 1s linear forwards;
+    opacity: 0.8;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity:1; }
+    100% { transform: translateY(200px) rotate(360deg); opacity:0; }
+  }
+
+/* Stil unik për kartën Figurat Letrare */
+.card {
+  background: #fff;
+  padding: 22px 26px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(20,30,40,0.10);
+  width: 370px;
+  margin: 50px auto 30px auto;
+  font-family: inherit;
+}
+.card h1 {
+  margin: 0 0 16px 0;
+  font-size: 21px;
+  color: #079fdb;
+  text-align: center;
+}
+.card label {
+  display: block;
+  margin-top: 12px;
+  font-size: 15px;
+  color: #222;
+}
+.card input[type="text"] {
+  width: 100%;
+  padding: 9px 11px;
+  margin-top: 6px;
+  border: 1px solid #cdd7ea;
+  border-radius: 7px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+.card button {
+  margin-top: 16px;
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 7px;
+  background: #079fdb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+.card button:hover {
+  background: #056fa7;
+}
+.card .result {
+  margin-top: 14px;
+  background: #eef6ff;
+  padding: 12px;
+  border-radius: 7px;
+  font-size: 15px;
+  color: #222;
+}
+
+.tregimi {
+  color: white;        /* vetëm teksti i tregimit bëhet i bardhë */
+  background: #3e31e7;   /* opsionale, për kontrast */
+  padding: 20px;
+  border-radius: 8px;
+  line-height: 1.6;
+}
+
+</style>
+</head>
+<body>
+
+
+
+
+
+
+<!-- ==================== QUIZ ME ALTERNATIVA ==================== -->
+<h1>1.|Quiz (6 pyetje)</h1>
+  <div class="quiz-card" data-quiz="q2">
+  <p>1. Cili është qytetërimi antik që konsiderohet si parardhës i shqiptarëve?</p>
+  <label class="option"><input type="radio" name="q2" value="Toka" data-correct="false">a)Grekët <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q2" value="Marsi" data-correct="true">b) Ilirët<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q2" value="Jupiteri" data-correct="false">c) Dakët <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q2" value="Venusi" data-correct="false">d) Romakët<span class="icon"></span></label>
+</div>
+
+<div class="quiz-card" data-quiz="q3">
+  <p>2. Cili ishte vendbanimi më i njohur i ilirëve në territorin e sotëm të Shqipërisë? </p>
+  <label class="option"><input type="radio" name="q3" value="Paris" data-correct="false">a)Apolonias<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q3" value="Lyon" data-correct="true">b)Dyrrahu<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q3" value="Berlin" data-correct="false">c)Shkodra<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q3" value="Madrid" data-correct="false">d)Butrinti<span class="icon"></span></label>
+</div>
+
+<div class="quiz-card" data-quiz="q4">
+  <p>3. Cila ishte arsyeja kryesore e luftërave iliro-romake?</p>
+  <label class="option"><input type="radio" name="q4" value="7" data-correct="false"> a)Konfliktet fetare <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q4" value="5" data-correct="true"> b)Kontrolli i detit Adriatik<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q4" value="6" data-correct="false"> c)Tregtia me Greqinë <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q4" value="8" data-correct="false">d)Shpërnguljet e popullsisë<span class="icon"></span></label>
+</div>
+
+<div class="quiz-card" data-quiz="q5">
+  <p>4. Cili ishte formacioni politik më i rëndësishëm shqiptar në shek. XIV?</p>
+  <label class="option"><input type="radio" name="q5" value="Thomas Edison" data-correct="false">a)Principata e Dukagjinëve <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q5" value="Nikola Tesla" data-correct="false"> b) Principata e Muzakajve <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q5" value="Einstein" data-correct="true">c) Principata e Balshajve <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q5" value="Newton" data-correct="false">d) Principata e Topiajve<span class="icon"></span></label>
+</div>
+
+<div class="quiz-card" data-quiz="q6">
+  <p>5. Cili ishte qëllimi kryesor i Kuvendit të Lezhës në vitin 1444?</p>
+  <label class="option"><input type="radio" name="q6" value="9" data-correct="false"> a) Të ndante territoret shqiptare <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q6" value="8" data-correct="true">    b) Të bashkonte forcat kundër osmanëve<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q6" value="7" data-correct="False">c) Të zgjidhte një princ të ri <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q6" value="6" data-correct="false"> d) Të nënshkruante paqe me Venedikun<span class="icon"></span></label>
+</div>
+
+<div class="quiz-card" data-quiz="q7">
+  <p>6. Cila nga këto është një pasojë e pushtimit osman në jetën e shqiptarëve?</p>
+  <label class="option"><input type="radio" name="q7" value="Nili" data-correct="false">a) Rritja e tregtisë me Evropën<span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q7" value="Amazon" data-correct="true"> b) Përhapja e fesë islame <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q7" value="Danubi" data-correct="false">  c) Zhvillimi i qyteteve të pavarura  <span class="icon"></span></label>
+  <label class="option"><input type="radio" name="q7" value="Mississippi" data-correct="false"> d) Liria e plotë fetare<span class="icon"></span></label>
+</div>
+
+
+
+
+
+<!-- ==================== DRAG & DROP QUIZ ==================== -->
+<h1>2.|Vendos përgjigjet në diagrmin e duhur</h1>
+<div class="zone-container">
+  <div class="dropzone" data-correct="A">Principata e Arbrit</div>
+  <div class="dropzone" data-correct="B">Principata e Balashajve</div>
+</div>
+
+<div class="answers">
+  <div class="answer" draggable="true" data-answer="A">Progoni<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="B">Strazimiri<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="A">Dhimitri<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="B">Shkodra<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="A">Besimi Katolik<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="B">Shqiperia e Veriut<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="A">Kruja<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="B">Ne veri kufizohej me Pejen dhe Prizerenin<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="A">Shtrirja Drini-Shkumbin<span class="icon"></span></div>
+  <div class="answer" draggable="true" data-answer="B">Përpjekje për reforma<span class="icon"></span></div>
+</div>
+<!-- Shto këtu formularin për Figurat Letrare -->
+
+
+
+
+<script>
+  const form = document.getElementById('figForm');
+  const output = document.getElementById('output');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const data = {
+      shprehje: document.getElementById('shprehje').value.trim(),
+      metafora: document.getElementById('metafora').value.trim(),
+      epitetet: document.getElementById('epitetet').value.trim(),
+      krahasimet: document.getElementById('krahasimet').value.trim(),
+      similitudat: document.getElementById('similitudat').value.trim()
+    };
+
+    output.style.display = 'block';
+    output.innerHTML = `
+      <strong>Shprehje Frazologjike:</strong> ${data.shprehje || '<i>(bosh)</i>'}<br>
+      <strong>Metafora:</strong> ${data.metafora || '<i>(bosh)</i>'}<br>
+      <strong>Epitetet:</strong> ${data.epitetet || '<i>(bosh)</i>'}<br>
+      <strong>Krahasimet:</strong> ${data.krahasimet || '<i>(bosh)</i>'}<br>
+      <strong>Similitudat:</strong> ${data.similitudat || '<i>(bosh)</i>'}
+    `;
+  });
+</script>
+
+</script>
+<script>
+// Quiz klasik
+document.querySelectorAll('.option input').forEach(function(input) {
+  input.addEventListener('change', function() {
+    const card = this.closest('.quiz-card');
+    const allInputs = card.querySelectorAll('input[type="radio"]');
+    card.classList.remove('correct', 'wrong');
+    void card.offsetWidth;
+    if(this.dataset.correct === "true") {
+      card.classList.add('correct');
+      this.parentNode.querySelector('.icon').textContent = "✅";
+      allInputs.forEach(i => i.disabled = true);
+      spawnConfetti(card);
+    } else {
+      card.classList.add('wrong');
+      this.parentNode.querySelector('.icon').textContent = "❌";
+    }
+  });
+});
+
+function spawnConfetti(card) {
+  for(let i=0;i<30;i++) {
+    const conf = document.createElement('div');
+    conf.classList.add('confetti');
+    conf.style.backgroundColor = randomColor();
+    const angle = Math.random()*2*Math.PI;
+    const radius = 90+Math.random()*60;
+    conf.style.setProperty('--x', `${Math.cos(angle)*radius}px`);
+    conf.style.setProperty('--y', `${Math.sin(angle)*radius}px`);
+    card.appendChild(conf);
+    setTimeout(()=>conf.remove(), 1000);
+  }
+}
+
+function randomColor() {
+  const colors = ['#ff595e','#ffca3a','#8ac926','#1982c4','#6a4c93','#ff00ff','#00ffff'];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+
+// Drag & Drop
+const answers = document.querySelectorAll('.answer');
+const zones = document.querySelectorAll('.dropzone');
+
+answers.forEach(ans => {
+  ans.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('text/plain', ans.dataset.answer);
+    e.dataTransfer.setData('element-index', Array.from(answers).indexOf(ans));
+  });
+});
+
+zones.forEach(zone => {
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    const droppedAnswer = e.dataTransfer.getData('text/plain');
+    const idx = e.dataTransfer.getData('element-index');
+    const ansElement = answers[idx];
+    zone.appendChild(ansElement);
+    if(zone.dataset.correct === droppedAnswer) {
+      ansElement.classList.add('correct');
+      ansElement.classList.remove('wrong');
+      spawnConfetti2(ansElement);
+    } else {
+      ansElement.classList.add('wrong');
+      ansElement.classList.remove('correct');
+    }
+  });
+});
+
+function spawnConfetti2(ansElement) {
+  for(let i=0;i<15;i++) {
+    const conf = document.createElement('div');
+    conf.classList.add('confetti2');
+    conf.style.left = `${Math.random()*50}px`;
+    conf.style.top = `-10px`;
+    conf.style.backgroundColor = randomColor();
+    ansElement.appendChild(conf);
+    setTimeout(()=>conf.remove(), 1000);
+  }
+}
+
+
+</script>
+
+</body>
+</html>
+
+
